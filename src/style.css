@@ -182,16 +182,22 @@ html, body {
   50% { opacity: 0.6; }
 }
 
-/* Dynamic Equalizer/Sound Bar Animations */
+/* Dynamic Equalizer/Sound Bar Animations - Made More Subtle */
 @keyframes soundWave {
-  0%, 100% { height: 4px; }
-  50% { height: 14px; }
+  0%, 100% {
+    height: 4px;
+    opacity: 0.5;
+  }
+  50% {
+    height: 9px;
+    opacity: 1;
+  }
 }
 
-.animate-sound-bar-1 { animation: soundWave 0.5s ease-in-out infinite alternate; }
-.animate-sound-bar-2 { animation: soundWave 0.75s ease-in-out infinite alternate; }
-.animate-sound-bar-3 { animation: soundWave 0.4s ease-in-out infinite alternate; }
-.animate-sound-bar-4 { animation: soundWave 0.6s ease-in-out infinite alternate; }
+.animate-sound-bar-1 { animation: soundWave 0.9s ease-in-out infinite alternate; }
+.animate-sound-bar-2 { animation: soundWave 1.2s ease-in-out infinite alternate; }
+.animate-sound-bar-3 { animation: soundWave 0.7s ease-in-out infinite alternate; }
+.animate-sound-bar-4 { animation: soundWave 1.0s ease-in-out infinite alternate; }
 
 /* Grid Layout (Strictly 2 Columns on Mobile, up to 4 on Desktops) */
 .birds-grid {
@@ -224,7 +230,23 @@ html, body {
   border-radius: 2px;
   border: 1px solid var(--border-color);
   background-color: var(--panel-bg);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover border animation */
+@keyframes borderHoverGlow {
+  0% {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    border-color: var(--emerald);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+  }
+}
+
+.bird-card:hover {
+  animation: borderHoverGlow 1.2s infinite alternate ease-in-out;
 }
 
 /* Nested card states and elements */
@@ -256,7 +278,7 @@ html, body {
 .card-glow-border {
   position: absolute;
   inset: 0;
-  border: 2px solid var(--emerald);
+  border: 1px solid var(--emerald);
   box-shadow: inset 0 0 8px var(--emerald-glow);
   z-index: 4;
   pointer-events: none;
@@ -264,10 +286,26 @@ html, body {
   transition: opacity 0.3s ease;
 }
 
+/* Active playing border animation */
+@keyframes borderPlayGlow {
+  0% {
+    border-color: var(--emerald);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.45), inset 0 0 8px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    border-color: #34d399;
+    box-shadow: 0 0 22px rgba(52, 211, 153, 0.75), inset 0 0 12px rgba(52, 211, 153, 0.4);
+  }
+  100% {
+    border-color: var(--emerald);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.45), inset 0 0 8px rgba(16, 185, 129, 0.2);
+  }
+}
+
 /* Selected Active Card state applied via JS classes */
 .bird-card.active {
   border-color: var(--emerald);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(16, 185, 129, 0.2);
+  animation: borderPlayGlow 1.8s infinite ease-in-out !important;
 }
 
 .bird-card.active .card-glow-border {
@@ -453,34 +491,37 @@ html, body {
   background: var(--border-hover);
 }
 
-/* Info Button Style */
-.info-btn-wrapper {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 15;
+/* Card Title and Info Button */
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
 }
 
-.info-btn {
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text-secondary);
+.card-info-trigger {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  pointer-events: auto; /* Allow clicks on pointer-events: none parent */
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
 }
 
-.info-btn:hover {
+.card-info-trigger:hover {
   background: var(--emerald);
   color: #000000;
   border-color: var(--emerald);
-  box-shadow: 0 0 12px var(--emerald-glow);
-  transform: scale(1.05);
+  box-shadow: 0 0 10px var(--emerald-glow);
+  transform: scale(1.1);
 }
 
 /* Modal Layout */

@@ -133,37 +133,20 @@ function renderGrid() {
       <!-- Vignette Overlay -->
       <div class="bird-vignette"></div>
 
-      <!-- Glowing active border (grows in dynamically) -->
+      <!-- Glowing active/hover border (animated via CSS) -->
       <div class="card-glow-border"></div>
 
-      <!-- Info Button Top Left -->
-      <div class="info-btn-wrapper" title="View Details">
-        <button class="info-btn" type="button">
-          <i data-lucide="info" style="width: 14px; height: 14px;"></i>
-        </button>
-      </div>
-
-      <!-- Content Container - Keeping ONLY the name as requested -->
+      <!-- Content Container -->
       <div class="card-details">
-        <!-- Bird Name -->
-        <h3 class="card-name" style="margin-bottom: 2px;">
-          ${bird.name}
-        </h3>
-      </div>
-
-      <!-- Top Right Indicator Overlay -->
-      <div class="card-indicator-box">
-        <!-- Static Play Icon (Visible on hover) -->
-        <div class="play-indicator">
-          <i data-lucide="play" style="width: 12px; height: 12px; fill: currentColor;"></i>
-        </div>
-
-        <!-- Equalizer Sound Wave (Hidden by default) -->
-        <div class="equalizer-indicator">
-          <span class="equalizer-bar animate-sound-bar-1"></span>
-          <span class="equalizer-bar animate-sound-bar-2"></span>
-          <span class="equalizer-bar animate-sound-bar-3"></span>
-          <span class="equalizer-bar animate-sound-bar-4"></span>
+        <div class="card-title-row">
+          <!-- Bird Name -->
+          <h3 class="card-name">
+            ${bird.name}
+          </h3>
+          <!-- Info button inline at the right of the name -->
+          <button class="card-info-trigger" type="button" title="View Details">
+            <i data-lucide="info" style="width: 13px; height: 13px;"></i>
+          </button>
         </div>
       </div>
     `;
@@ -172,7 +155,7 @@ function renderGrid() {
     card.addEventListener("click", () => handleCardClick(bird));
 
     // Click on the Info icon triggers Details Modal (and stops propagation to prevent play)
-    const infoBtn = card.querySelector(".info-btn");
+    const infoBtn = card.querySelector(".card-info-trigger");
     if (infoBtn) {
       infoBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -271,14 +254,6 @@ function resetAllCards() {
     const card = document.getElementById(`card-${bird.id}`);
     if (card) {
       card.classList.remove("active");
-
-      const playIndicator = card.querySelector(".play-indicator");
-      if (playIndicator) playIndicator.style.display = "";
-
-      const equalizer = card.querySelector(".equalizer-indicator");
-      if (equalizer) {
-        equalizer.classList.remove("flex");
-      }
     }
   });
   activeBirdId = null;
@@ -363,22 +338,10 @@ function updateCardPlaybackUI(birdId, playing) {
   const card = document.getElementById(`card-${birdId}`);
   if (!card) return;
 
-  const playIndicator = card.querySelector(".play-indicator");
-  const equalizer = card.querySelector(".equalizer-indicator");
-
   if (playing) {
     card.classList.add("active");
-
-    if (playIndicator) playIndicator.style.display = "none";
-    if (equalizer) {
-      equalizer.classList.add("flex");
-    }
   } else {
-    // Paused state but keeps the active border/selection
-    if (playIndicator) playIndicator.style.display = "";
-    if (equalizer) {
-      equalizer.classList.remove("flex");
-    }
+    card.classList.remove("active");
   }
 
   // Update modal play button UI in case the modal of the playing bird is currently open

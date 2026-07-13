@@ -19,11 +19,13 @@ const CALL_PHONETICS = {
 let activeBirdId = null;
 let isPlaying = false;
 let audioRef = null;
+let modalBird = null; // Track currently selected bird in the detail modal
 
 // Initialize app when DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
   setupOfflineBanner();
   renderGrid();
+  setupModalListeners();
 });
 
 // Setup online/offline event listeners and banners
@@ -34,18 +36,16 @@ function setupOfflineBanner() {
 
   function updateStatus() {
     if (!navigator.onLine) {
-      offlineAlert.classList.remove("hidden");
-      offlinePill.classList.remove("hidden");
-      offlinePill.classList.add("flex");
+      if (offlineAlert) offlineAlert.classList.remove("hidden");
+      if (offlinePill) offlinePill.classList.remove("hidden");
       // Stop playback if offline
       if (audioRef) {
         audioRef.pause();
       }
       resetAllCards();
     } else {
-      offlineAlert.classList.add("hidden");
-      offlinePill.classList.add("hidden");
-      offlinePill.classList.remove("flex");
+      if (offlineAlert) offlineAlert.classList.add("hidden");
+      if (offlinePill) offlinePill.classList.add("hidden");
       hidePlaybackError();
     }
   }
@@ -55,7 +55,7 @@ function setupOfflineBanner() {
   
   if (dismissBtn) {
     dismissBtn.addEventListener("click", () => {
-      offlineAlert.classList.add("hidden");
+      if (offlineAlert) offlineAlert.classList.add("hidden");
     });
   }
 
@@ -66,19 +66,46 @@ function setupOfflineBanner() {
 function showPlaybackError(message) {
   const errorAlert = document.getElementById("playback-error");
   const errorMessage = document.getElementById("error-message");
-  errorMessage.textContent = message;
-  errorAlert.classList.remove("hidden");
+  if (errorMessage) errorMessage.textContent = message;
+  if (errorAlert) errorAlert.classList.remove("hidden");
 }
 
 function hidePlaybackError() {
   const errorAlert = document.getElementById("playback-error");
-  errorAlert.classList.add("hidden");
+  if (errorAlert) errorAlert.classList.add("hidden");
 }
 
 // Bind close button of error toast
 document.getElementById("dismiss-error")?.addEventListener("click", () => {
   hidePlaybackError();
 });
+
+// Setup events for the Details Modal
+function setupModalListeners() {
+  const closeBtn = document.getElementById("modal-close");
+  const modalOverlay = document.getElementById("details-modal");
+  const playTrigger = document.getElementById("modal-play-trigger");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeDetailsModal);
+  }
+
+  if (modalOverlay) {
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) {
+        closeDetailsModal();
+      }
+    });
+  }
+
+  if (playTrigger) {
+    playTrigger.addEventListener("click", () => {
+      if (modalBird) {
+        handleCardClick(modalBird);
+      }
+    });
+  }
+}
 
 // Render the entire grid of birds programmatically
 function renderGrid() {
@@ -88,12 +115,11 @@ function renderGrid() {
   gridContainer.innerHTML = "";
 
   BIRDS_DATA.forEach((bird) => {
-    const phonetic = CALL_PHONETICS[bird.id] || bird.callType;
     const imageUrl = bird.imageUrl;
 
     const card = document.createElement("div");
     card.id = `card-${bird.id}`;
-    card.className = `relative w-full aspect-square overflow-hidden group cursor-pointer select-none rounded-sm border border-stone-800/80 hover:border-stone-700 hover:shadow-lg transition-all duration-300`;
+    card.className = "bird-card";
 
     card.innerHTML = `
       <!-- Background Image -->
@@ -101,64 +127,58 @@ function renderGrid() {
         src="${imageUrl}"
         alt="${bird.name}"
         referrerpolicy="no-referrer"
-        class="absolute inset-0 w-full h-full object-cover grayscale-[10%] sepia-[5%] contrast-[1.04] brightness-[0.78] transition-all duration-300 group-hover:brightness-90"
+        class="bird-card-img"
       />
 
       <!-- Vignette Overlay -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent mix-blend-multiply opacity-90"></div>
+      <div class="bird-vignette"></div>
 
       <!-- Glowing active border (grows in dynamically) -->
-      <div class="absolute inset-0 border-2 border-emerald-500 z-20 pointer-events-none opacity-0 transition-opacity duration-300 active-border"></div>
+      <div class="card-glow-border"></div>
 
-      <!-- Content Container -->
-      <div class="absolute bottom-4 left-4 right-4 z-10 flex flex-col text-left pointer-events-none">
-        
-        <!-- Call phonetic -->
-        <span class="font-mono text-[8px] sm:text-[9px] tracking-[0.2em] text-stone-400 uppercase mb-1.5 block truncate">
-          ${phonetic}
-        </span>
+      <!-- Info Button Top Left -->
+      <div class="info-btn-wrapper" title="View Details">
+        <button class="info-btn" type="button">
+          <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+        </button>
+      </div>
 
+      <!-- Content Container - Keeping ONLY the name as requested -->
+      <div class="card-details">
         <!-- Bird Name -->
-        <h3 class="font-sans font-black text-sm sm:text-base tracking-tight uppercase leading-[1.0] text-white group-hover:text-emerald-400 transition-colors duration-200">
+        <h3 class="card-name" style="margin-bottom: 2px;">
           ${bird.name}
         </h3>
-
-        <!-- Scientific Name & Avatar -->
-        <div class="flex items-center gap-1.5 mt-2">
-          <div class="w-4 h-4 rounded-full border border-white/20 overflow-hidden bg-stone-900 flex-shrink-0">
-            <img
-              src="${imageUrl}"
-              alt=""
-              referrerpolicy="no-referrer"
-              class="w-full h-full object-cover scale-110"
-            />
-          </div>
-          <span class="text-[9px] sm:text-[10px] text-stone-300 font-sans tracking-wide truncate">
-            by <span class="italic">${bird.scientificName}</span>
-          </span>
-        </div>
-
       </div>
 
       <!-- Top Right Indicator Overlay -->
-      <div class="absolute top-3 right-3 z-10 pointer-events-none">
+      <div class="card-indicator-box">
         <!-- Static Play Icon (Visible on hover) -->
-        <div class="play-indicator p-1 rounded-full bg-black/40 border border-white/10 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <i data-lucide="play" class="w-3 h-3 fill-white text-white ml-[1px]"></i>
+        <div class="play-indicator">
+          <i data-lucide="play" style="width: 12px; height: 12px; fill: currentColor;"></i>
         </div>
 
         <!-- Equalizer Sound Wave (Hidden by default) -->
-        <div class="equalizer-indicator hidden items-end justify-center gap-[2px] w-7 h-7 bg-emerald-500 text-black shadow-md rounded-full p-[6px] overflow-hidden">
-          <span class="w-[2.5px] bg-black rounded-full animate-sound-bar-1" style="height: 4px;"></span>
-          <span class="w-[2.5px] bg-black rounded-full animate-sound-bar-2" style="height: 4px;"></span>
-          <span class="w-[2.5px] bg-black rounded-full animate-sound-bar-3" style="height: 4px;"></span>
-          <span class="w-[2.5px] bg-black rounded-full animate-sound-bar-4" style="height: 4px;"></span>
+        <div class="equalizer-indicator">
+          <span class="equalizer-bar animate-sound-bar-1"></span>
+          <span class="equalizer-bar animate-sound-bar-2"></span>
+          <span class="equalizer-bar animate-sound-bar-3"></span>
+          <span class="equalizer-bar animate-sound-bar-4"></span>
         </div>
       </div>
     `;
 
-    // Attach play logic click event
+    // Click on the overall card triggers play logic
     card.addEventListener("click", () => handleCardClick(bird));
+
+    // Click on the Info icon triggers Details Modal (and stops propagation to prevent play)
+    const infoBtn = card.querySelector(".info-btn");
+    if (infoBtn) {
+      infoBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openDetailsModal(bird);
+      });
+    }
 
     gridContainer.appendChild(card);
   });
@@ -169,29 +189,101 @@ function renderGrid() {
   }
 }
 
+// Open Details Modal and populate with JSON details
+function openDetailsModal(bird) {
+  modalBird = bird;
+  const modal = document.getElementById("details-modal");
+  if (!modal) return;
+
+  // Set hero image
+  const modalImage = document.getElementById("modal-image");
+  if (modalImage) {
+    modalImage.src = bird.imageUrl;
+    modalImage.alt = bird.name;
+  }
+
+  // Populate textual fields
+  const pScientific = CALL_PHONETICS[bird.id] || bird.callType;
+  document.getElementById("modal-scientific").innerHTML = `<span>${bird.scientificName}</span>`;
+  document.getElementById("modal-title").textContent = bird.name;
+  document.getElementById("modal-family").textContent = bird.family || "N/A";
+  document.getElementById("modal-region").textContent = bird.region || "N/A";
+  document.getElementById("modal-habitat").textContent = bird.habitat || "N/A";
+  document.getElementById("modal-calltype").textContent = `${bird.callType} ("${pScientific}")`;
+  document.getElementById("modal-desc").textContent = bird.description || "";
+  document.getElementById("modal-funfact-text").textContent = bird.funFact || "";
+
+  // Synchronize modal play button state
+  updateModalPlayButtonUI();
+
+  // Display overlay
+  modal.classList.add("active");
+
+  // Re-hydrate Lucide icons for the newly loaded modal buttons
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+// Close Details Modal
+function closeDetailsModal() {
+  const modal = document.getElementById("details-modal");
+  if (modal) {
+    modal.classList.remove("active");
+  }
+  modalBird = null;
+}
+
+// Synchronize play button UI state inside modal
+function updateModalPlayButtonUI() {
+  const playTrigger = document.getElementById("modal-play-trigger");
+  if (!playTrigger || !modalBird) return;
+
+  const isCurrentBirdPlaying = (activeBirdId === modalBird.id && isPlaying);
+  const playText = document.getElementById("modal-play-text");
+
+  if (isCurrentBirdPlaying) {
+    playTrigger.classList.add("playing");
+    if (playText) playText.textContent = "Pause Call";
+    // Change icon to pause
+    playTrigger.innerHTML = `
+      <i data-lucide="pause" style="width: 14px; height: 14px; fill: currentColor;"></i>
+      <span id="modal-play-text">Pause Call</span>
+    `;
+  } else {
+    playTrigger.classList.remove("playing");
+    if (playText) playText.textContent = "Listen to Call";
+    // Change icon to play
+    playTrigger.innerHTML = `
+      <i data-lucide="play" style="width: 14px; height: 14px; fill: currentColor;"></i>
+      <span id="modal-play-text">Listen to Call</span>
+    `;
+  }
+
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
 // Reset visual states of all cards back to idle
 function resetAllCards() {
   BIRDS_DATA.forEach((bird) => {
     const card = document.getElementById(`card-${bird.id}`);
     if (card) {
-      card.classList.remove("border-emerald-500", "shadow-[0_10px_20px_rgba(0,0,0,0.5)]");
-      card.classList.add("border-stone-800/80");
-
-      const activeBorder = card.querySelector(".active-border");
-      if (activeBorder) activeBorder.classList.add("opacity-0");
+      card.classList.remove("active");
 
       const playIndicator = card.querySelector(".play-indicator");
-      if (playIndicator) playIndicator.classList.remove("hidden");
+      if (playIndicator) playIndicator.style.display = "";
 
       const equalizer = card.querySelector(".equalizer-indicator");
       if (equalizer) {
-        equalizer.classList.add("hidden");
         equalizer.classList.remove("flex");
       }
     }
   });
   activeBirdId = null;
   isPlaying = false;
+  updateModalPlayButtonUI();
 }
 
 // Audio Engine
@@ -271,26 +363,24 @@ function updateCardPlaybackUI(birdId, playing) {
   const card = document.getElementById(`card-${birdId}`);
   if (!card) return;
 
-  const activeBorder = card.querySelector(".active-border");
   const playIndicator = card.querySelector(".play-indicator");
   const equalizer = card.querySelector(".equalizer-indicator");
 
   if (playing) {
-    card.classList.add("border-emerald-500", "shadow-[0_10px_20px_rgba(0,0,0,0.5)]");
-    card.classList.remove("border-stone-800/80");
+    card.classList.add("active");
 
-    if (activeBorder) activeBorder.classList.remove("opacity-0");
-    if (playIndicator) playIndicator.classList.add("hidden");
+    if (playIndicator) playIndicator.style.display = "none";
     if (equalizer) {
-      equalizer.classList.remove("hidden");
       equalizer.classList.add("flex");
     }
   } else {
     // Paused state but keeps the active border/selection
-    if (playIndicator) playIndicator.classList.remove("hidden");
+    if (playIndicator) playIndicator.style.display = "";
     if (equalizer) {
-      equalizer.classList.add("hidden");
       equalizer.classList.remove("flex");
     }
   }
+
+  // Update modal play button UI in case the modal of the playing bird is currently open
+  updateModalPlayButtonUI();
 }

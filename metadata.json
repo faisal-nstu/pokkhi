@@ -1,0 +1,8 @@
+{
+  "name": "Pokkhi",
+  "description": "An aesthetic acoustic archive of forest birds in Bangladesh with interactive grid audio playback and dynamic glowing elements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

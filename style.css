@@ -233,20 +233,10 @@ html, body {
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-/* Hover border animation */
-@keyframes borderHoverGlow {
-  0% {
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  }
-  100% {
-    border-color: var(--emerald);
-    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-  }
-}
-
+/* Hover static border styling */
 .bird-card:hover {
-  animation: borderHoverGlow 1.2s infinite alternate ease-in-out;
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
 }
 
 /* Nested card states and elements */
@@ -286,19 +276,19 @@ html, body {
   transition: opacity 0.3s ease;
 }
 
-/* Active playing border animation */
+/* Active playing border animation - Highly Prominent Glow */
 @keyframes borderPlayGlow {
   0% {
-    border-color: var(--emerald);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.45), inset 0 0 8px rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), inset 0 0 12px rgba(16, 185, 129, 0.45);
   }
   50% {
     border-color: #34d399;
-    box-shadow: 0 0 22px rgba(52, 211, 153, 0.75), inset 0 0 12px rgba(52, 211, 153, 0.4);
+    box-shadow: 0 0 35px rgba(52, 211, 153, 1), inset 0 0 22px rgba(52, 211, 153, 0.7);
   }
   100% {
-    border-color: var(--emerald);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.45), inset 0 0 8px rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), inset 0 0 12px rgba(16, 185, 129, 0.45);
   }
 }
 

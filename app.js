@@ -13,7 +13,15 @@ const CALL_PHONETICS = {
   "chestnut-headed-bee-eater": "trrip-trrip!",
   "puff-throated-babbler": "pretty-sweet-heart!",
   "asian-fairy-bluebird": "metallic we-tuu!",
-  "black-drongo": "screaming rattles"
+  "black-drongo": "screaming rattles",
+  "indian-cuckoo": "bou-kotha-kao!",
+  "black-hooded-oriole": "pee-lo-lo!",
+  "van-hasselts-sunbird": "tsip-tsip-tsip!",
+  "rufous-treepie": "ko-tri-link!",
+  "asian-barred-owlet": "whah-whah-whah!",
+  "striated-grassbird": "churrr-tweet!",
+  "striated-babbler": "chack-chack-chack!",
+  "black-browed-reed-warbler": "chirrr-chirrr-chup!"
 };
 
 let activeBirdId = null;
@@ -122,6 +130,14 @@ function renderGrid() {
     card.className = "bird-card";
 
     card.innerHTML = `
+      <!-- Blurred Background Image to cover gaps -->
+      <img
+        src="${imageUrl}"
+        alt=""
+        referrerpolicy="no-referrer"
+        class="bird-card-img-blur"
+      />
+
       <!-- Background Image -->
       <img
         src="${imageUrl}"

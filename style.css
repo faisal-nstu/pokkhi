@@ -71,7 +71,7 @@ html, body {
 @media (max-width: 640px) {
   .app-header {
     flex-direction: column;
-    padding-top: 32px;
+    padding: 20px 12px 8px 12px;
   }
 }
 
@@ -123,6 +123,15 @@ html, body {
 
 .alert-box.hidden {
   display: none !important;
+}
+
+@media (max-width: 640px) {
+  .alert-box {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-bottom: 16px;
+  }
 }
 
 .alert-content {
@@ -205,51 +214,41 @@ html, body {
 .animate-sound-bar-3 { animation: soundWave 0.7s ease-in-out infinite alternate; }
 .animate-sound-bar-4 { animation: soundWave 1.0s ease-in-out infinite alternate; }
 
-/* Grid Layout (Strictly 2 Columns on Mobile, up to 4 on Desktops) */
+/* Grid Layout (Strictly 2 Columns on Mobile, up to 4 on Desktops) using CSS Columns for Masonry */
 .birds-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0; /* Continuous edge-to-edge layout on mobile */
+  column-count: 2;
+  column-gap: 0;
   width: 100%;
-}
-
-@media (min-width: 640px) {
-  .birds-grid {
-    gap: 16px; /* standard gap on larger devices */
-  }
 }
 
 @media (min-width: 768px) {
   .birds-grid {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 3;
   }
 }
 
 @media (min-width: 1024px) {
   .birds-grid {
-    grid-template-columns: repeat(4, 1fr);
+    column-count: 4;
   }
 }
 
 /* Elegant Bird Cards */
 .bird-card {
   position: relative;
+  display: inline-block;
+  vertical-align: top;
+  break-inside: avoid;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1; /* Fallback before dynamic aspect ratio is loaded */
   overflow: hidden;
   cursor: pointer;
   user-select: none;
-  border-radius: 0; /* sharp edge-to-edge cards on mobile */
-  border: 0.5px solid rgba(255, 255, 255, 0.08); /* fine grid line on mobile */
+  border-radius: 0; /* sharp edge-to-edge cards on all devices */
+  border: 0.5px solid rgba(255, 255, 255, 0.08); /* fine grid line on all devices */
   background-color: var(--panel-bg);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-@media (min-width: 640px) {
-  .bird-card {
-    border-radius: 2px;
-    border: 1px solid var(--border-color);
-  }
+  margin-bottom: 0; /* Continuous edge-to-edge layout vertically */
 }
 
 /* Hover static border styling */
@@ -493,6 +492,12 @@ html, body {
   text-align: center;
 }
 
+@media (max-width: 640px) {
+  .app-footer {
+    padding: 24px 12px;
+  }
+}
+
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -610,6 +615,18 @@ html, body {
   transform: scale(0.95);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0;
+  }
+  .modal-container {
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
 }
 
 @media (min-width: 768px) {

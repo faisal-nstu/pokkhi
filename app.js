@@ -129,6 +129,16 @@ function renderGrid() {
     card.id = `card-${bird.id}`;
     card.className = "bird-card";
 
+    // Dynamically match the card aspect ratio to the natural image aspect ratio to avoid letterboxing/cropping
+    const imgObj = new Image();
+    imgObj.src = imageUrl;
+    imgObj.onload = () => {
+      const ratio = imgObj.naturalWidth / imgObj.naturalHeight;
+      // Clamp within reasonable visual bounds (e.g., 0.65 to 1.5) to keep the masonry grid cohesive
+      const cleanRatio = Math.max(0.65, Math.min(1.5, ratio));
+      card.style.aspectRatio = `${cleanRatio}`;
+    };
+
     card.innerHTML = `
       <!-- Blurred Background Image to cover gaps -->
       <img

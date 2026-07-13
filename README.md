@@ -4,60 +4,50 @@ An interactive, high-fidelity acoustic directory of local birds in Sreemangal, B
 
 ---
 
-## 🚀 Deploying to GitHub Pages
+## 🚀 Deploying Directly from the `main` Branch to GitHub Pages
 
-The error you encountered:
-> *`Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/octet-stream"`*
+By default, GitHub Pages is a static file server and cannot build raw TypeScript/React source files directly. You must first build your application to production-ready static assets and configure GitHub Pages to serve them.
 
-occurs because **GitHub Pages is a static file host** and cannot compile raw `.tsx` (TypeScript) source files directly in the browser. You must build your application to static HTML, CSS, and JS first, and host those built files (the `dist/` directory) rather than your raw source code.
+To make deploying from your **`main`** branch as simple and direct as possible, we have configured the build system to output to the **`docs`** folder. 
 
-We have included two highly reliable ways to deploy this project properly.
+Follow these **3 quick steps** to publish your application:
 
----
+### Step 1: Build your application locally
+In your terminal, run the following command to build the production assets into the `docs/` folder:
+```bash
+npm run build
+```
 
-### Option A: Fully Automated Deployment (Recommended)
-We have added a **GitHub Actions** workflow that automatically builds and deploys your application every time you push to your `main` or `master` branch.
+### Step 2: Commit and push the `docs` folder to GitHub
+Add, commit, and push the newly generated `docs/` folder to your `main` branch:
+```bash
+git add docs/
+git commit -m "build: compile assets to docs for GitHub Pages"
+git push origin main
+```
 
-1. **Commit and Push** your changes to your GitHub repository (including the new `.github/workflows/deploy.yml` file).
-2. Go to your repository on GitHub and navigate to the **Settings** tab.
+### Step 3: Configure GitHub Pages to use the `docs` folder
+1. Go to your repository on **GitHub.com**.
+2. Click the **Settings** tab at the top.
 3. On the left sidebar, click **Pages**.
 4. Under **Build and deployment**:
    - Set **Source** to **Deploy from a branch**.
-   - Set **Branch** to `gh-pages` and folder to `/ (root)`.
-   - Click **Save**.
-5. Once saved, your app will automatically compile and serve the pristine production bundle at your GitHub Pages URL!
+   - Set the branch to **`main`**.
+   - Change the folder from `/ (root)` to **`/docs`**.
+5. Click **Save**.
+
+Your app will be live at your GitHub Pages URL in less than a minute!
 
 ---
 
-### Option B: Manual Terminal Deployment
-If you prefer to deploy manually from your terminal, you can build and publish using the `gh-pages` package:
+## 🛠️ Local Development
 
-1. **Install the deployment tool**:
-   ```bash
-   npm install --save-dev gh-pages
-   ```
-2. **Add scripts to `package.json`**:
-   Open `package.json` and add these two lines under the `"scripts"` section:
-   ```json
-   "predeploy": "npm run build",
-   "deploy": "gh-pages -d dist"
-   ```
-3. **Deploy with a single command**:
-   ```bash
-   npm run deploy
-   ```
-   This compiles your application to the `dist` directory and pushes it automatically to your `gh-pages` branch. Then, configure your GitHub Pages settings to serve from the `gh-pages` branch.
-
----
-
-## 🛠️ Development
-
-To run the application locally in development mode:
+To run the application locally:
 
 ```bash
 # Install dependencies
 npm install
 
-# Start the development server
+# Start the local development server
 npm run dev
 ```

@@ -1,6 +1,4 @@
-import { BirdSpecies } from "./types";
-
-export const BIRDS_DATA: BirdSpecies[] = [
+export const BIRDS_DATA = [
   {
     id: "oriental-pied-hornbill",
     name: "Oriental Pied Hornbill",

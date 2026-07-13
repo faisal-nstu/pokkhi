@@ -4,8 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokkhi</title>
-    <!-- Import Compiled/Vite-served CSS style sheet -->
+    <!-- Add elegant inline SVG emoji favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐦</text></svg>">
+    <!-- Import local CSS style sheet -->
     <link rel="stylesheet" href="./src/style.css" />
+    <!-- Load Tailwind CSS CDN for zero-build native browser compilation -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            }
+          }
+        }
+      }
+    </script>
     <!-- Load Lucide icons from CDN for clean vanilla SVG handling -->
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>

@@ -99,6 +99,12 @@ html, body {
   padding: 0 16px 64px 16px;
 }
 
+@media (max-width: 640px) {
+  .app-main {
+    padding: 0 0 32px 0;
+  }
+}
+
 /* Elegant Banners/Alerts */
 .alert-box {
   margin-bottom: 24px;
@@ -203,8 +209,14 @@ html, body {
 .birds-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 0; /* Continuous edge-to-edge layout on mobile */
   width: 100%;
+}
+
+@media (min-width: 640px) {
+  .birds-grid {
+    gap: 16px; /* standard gap on larger devices */
+  }
 }
 
 @media (min-width: 768px) {
@@ -227,10 +239,17 @@ html, body {
   overflow: hidden;
   cursor: pointer;
   user-select: none;
-  border-radius: 2px;
-  border: 1px solid var(--border-color);
+  border-radius: 0; /* sharp edge-to-edge cards on mobile */
+  border: 0.5px solid rgba(255, 255, 255, 0.08); /* fine grid line on mobile */
   background-color: var(--panel-bg);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+@media (min-width: 640px) {
+  .bird-card {
+    border-radius: 2px;
+    border: 1px solid var(--border-color);
+  }
 }
 
 /* Hover static border styling */
@@ -246,7 +265,7 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(20px) brightness(0.4) saturate(1.2);
+  filter: blur(20px) brightness(0.45) saturate(1.2);
   transform: scale(1.15); /* Scale slightly to prevent white/transparent edge artifacts from the CSS blur filter */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
   z-index: 0;
@@ -255,7 +274,7 @@ html, body {
 
 .bird-card:hover .bird-card-img-blur {
   transform: scale(1.2) rotate(0.5deg);
-  filter: blur(20px) brightness(0.5) saturate(1.3);
+  filter: blur(20px) brightness(0.55) saturate(1.3);
 }
 
 .bird-card-img {
@@ -264,14 +283,14 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: grayscale(10%) sepia(5%) contrast(1.04) brightness(0.85);
+  filter: grayscale(10%) sepia(5%) contrast(1.04); /* Removed shadow/brightness reduction from the bird images */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
   z-index: 1;
 }
 
 .bird-card:hover .bird-card-img {
   transform: scale(1.04);
-  filter: grayscale(0%) sepia(0%) contrast(1.05) brightness(0.98);
+  filter: grayscale(0%) sepia(0%) contrast(1.05);
 }
 
 .bird-vignette {
@@ -319,13 +338,21 @@ html, body {
 /* Card Content Panel */
 .card-details {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
   z-index: 3;
   display: flex;
   flex-direction: column;
   pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .card-details {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+  }
 }
 
 .card-phonetic {
@@ -344,7 +371,7 @@ html, body {
 .card-name {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 0.95rem;
+  font-size: 0.72rem; /* compact on mobile */
   letter-spacing: -0.01em;
   text-transform: uppercase;
   line-height: 1.1;
@@ -355,7 +382,7 @@ html, body {
 
 @media (min-width: 640px) {
   .card-name {
-    font-size: 1.05rem;
+    font-size: 1.05rem; /* larger font size on desktop */
   }
 }
 
@@ -512,8 +539,8 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-muted);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -521,6 +548,22 @@ html, body {
   pointer-events: auto; /* Allow clicks on pointer-events: none parent */
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
+}
+
+.card-info-trigger svg {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+@media (min-width: 640px) {
+  .card-info-trigger {
+    width: 24px;
+    height: 24px;
+  }
+  .card-info-trigger svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
 }
 
 .card-info-trigger:hover {

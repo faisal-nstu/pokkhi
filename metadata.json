@@ -1,6 +1,0 @@
-{
-  "name": "Bird Call Directory",
-  "description": "An interactive, lightweight soundboard for bird songs and calls, optimized for static hosting on GitHub Pages.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

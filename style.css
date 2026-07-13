@@ -275,11 +275,7 @@ html, body {
 }
 
 .bird-vignette {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 55%, transparent 100%);
-  z-index: 2;
-  pointer-events: none;
+  display: none;
 }
 
 /* Glowing selection border */
@@ -342,6 +338,7 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.95), 0px 1px 3px rgba(0, 0, 0, 1);
 }
 
 .card-name {
@@ -353,6 +350,7 @@ html, body {
   line-height: 1.1;
   color: var(--text-primary);
   transition: color 0.2s ease;
+  text-shadow: 1px 1px 1px #000, 1px 2px 4px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 @media (min-width: 640px) {
@@ -397,6 +395,7 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.95), 0px 1px 3px rgba(0, 0, 0, 1);
 }
 
 .card-scientific span {

@@ -141,6 +141,18 @@
       </div>
     </div>
 
+    <!-- SVG filter for perfect gradient glow (Ana Tudor style) -->
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+      <filter id="feGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="25" result="blur" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 2.5 -0.1" />
+        <feMerge>
+          <feMergeNode />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </svg>
+
     <!-- Main module script -->
     <script type="module" src="./app.js"></script>
   </body>

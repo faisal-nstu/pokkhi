@@ -241,7 +241,7 @@ html, body {
   break-inside: avoid;
   width: 100%;
   aspect-ratio: 1 / 1; /* Fallback before dynamic aspect ratio is loaded */
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   user-select: none;
   border-radius: 0; /* sharp edge-to-edge cards on all devices */
@@ -249,12 +249,25 @@ html, body {
   background-color: var(--panel-bg);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   margin-bottom: 0; /* Continuous edge-to-edge layout vertically */
+  z-index: 1;
 }
 
 /* Hover static border styling */
 .bird-card:hover {
   border-color: rgba(255, 255, 255, 0.45);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  z-index: 5; /* Lift hovered card so shadow is fully visible over neighbors */
+}
+
+/* Container for images to safely hide scaled/blurred assets */
+.bird-card-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Nested card states and elements */
@@ -296,38 +309,60 @@ html, body {
   display: none;
 }
 
-/* Glowing selection border */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateAngle {
+  0% {
+    --angle: 0deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
+}
+
+/* Glowing selection border - Rotating Multicolor Gradient (Ana Tudor Style) */
 .card-glow-border {
   position: absolute;
-  inset: 0;
-  border: 1px solid var(--emerald);
-  box-shadow: inset 0 0 8px var(--emerald-glow);
+  inset: -5px;
   z-index: 4;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
+  padding: 5px;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
-/* Active playing border animation - Highly Prominent Glow */
-@keyframes borderPlayGlow {
-  0% {
-    border-color: #10b981;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), inset 0 0 12px rgba(16, 185, 129, 0.45);
-  }
-  50% {
-    border-color: #34d399;
-    box-shadow: 0 0 35px rgba(52, 211, 153, 1), inset 0 0 22px rgba(52, 211, 153, 0.7);
-  }
-  100% {
-    border-color: #10b981;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), inset 0 0 12px rgba(16, 185, 129, 0.45);
-  }
+.card-glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -10px; /* Slightly larger to guarantee coverage during rotation */
+  background: conic-gradient(from var(--angle), #00ff66, #00f0ff, #3b82f6, #00ff66);
+  animation: rotateAngle 3s linear infinite;
 }
 
 /* Selected Active Card state applied via JS classes */
 .bird-card.active {
-  border-color: var(--emerald);
-  animation: borderPlayGlow 1.8s infinite ease-in-out !important;
+  z-index: 10 !important;
+}
+
+/* Elegant rotating multicolor glow layer behind the active card using high-performance SVG filter */
+.bird-card.active::before {
+  content: '';
+  position: absolute;
+  inset: -12px; /* Smooth, beautiful outer edge glow */
+  background: conic-gradient(from var(--angle), #00ff66, #00f0ff, #3b82f6, #00ff66);
+  z-index: -1;
+  filter: url(#feGlow);
+  opacity: 0.85;
+  pointer-events: none;
+  animation: rotateAngle 3s linear infinite;
 }
 
 .bird-card.active .card-glow-border {

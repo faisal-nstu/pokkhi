@@ -140,24 +140,26 @@ function renderGrid() {
     };
 
     card.innerHTML = `
-      <!-- Blurred Background Image to cover gaps -->
-      <img
-        src="${imageUrl}"
-        alt=""
-        referrerpolicy="no-referrer"
-        class="bird-card-img-blur"
-      />
+      <div class="bird-card-media">
+        <!-- Blurred Background Image to cover gaps -->
+        <img
+          src="${imageUrl}"
+          alt=""
+          referrerpolicy="no-referrer"
+          class="bird-card-img-blur"
+        />
 
-      <!-- Background Image -->
-      <img
-        src="${imageUrl}"
-        alt="${bird.name}"
-        referrerpolicy="no-referrer"
-        class="bird-card-img"
-      />
+        <!-- Background Image -->
+        <img
+          src="${imageUrl}"
+          alt="${bird.name}"
+          referrerpolicy="no-referrer"
+          class="bird-card-img"
+        />
 
-      <!-- Vignette Overlay -->
-      <div class="bird-vignette"></div>
+        <!-- Vignette Overlay -->
+        <div class="bird-vignette"></div>
+      </div>
 
       <!-- Glowing active/hover border (animated via CSS) -->
       <div class="card-glow-border"></div>
